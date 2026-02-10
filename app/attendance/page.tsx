@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Navbar from '../../components/Navbar';
-import { getMembers, submitAttendance } from '../../services/api';
+import Navbar from '../components/Navbar';
+import { getMembers, submitAttendance } from '../services/api';
 import Cookies from 'js-cookie';
 import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
