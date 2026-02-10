@@ -21,14 +21,6 @@ export const login = async (credentials: any) => {
 };
 
 export const getMyFamily = async () => {
-    // We don't have a direct "get my family" route, but we have /family/:id
-    // But we need to know our ID. 
-    // The login response returns 'family' object. We should store it or ID in cookies/context.
-    // Or we decode the token.
-    // For now, let's assume the component handles ID from local storage or context.
-    // Better: Helper to get family details using ID.
-    // But wait, the user logs in as FAMILY.
-    // Let's create a route /auth/me or similar? Or just extract from token.
     return Promise.resolve(null); // Placeholder
 };
 
@@ -50,6 +42,32 @@ export const submitAttendance = async (attendances: any[], date: Date) => {
 
 export const getHistory = async (familyId: string) => {
     return api.get(`/attendance?familyId=${familyId}`);
+};
+
+export const getAttendanceByDate = async (familyId: string, date: string) => {
+    return api.get(`/attendance?familyId=${familyId}&date=${date}`);
+};
+
+export const getMetrics = async (params: {
+    familyId?: string;
+    startDate?: string;
+    endDate?: string;
+    date?: string;
+}) => {
+    const query = new URLSearchParams();
+    if (params.familyId) query.append('familyId', params.familyId);
+    if (params.startDate) query.append('startDate', params.startDate);
+    if (params.endDate) query.append('endDate', params.endDate);
+    if (params.date) query.append('date', params.date);
+    return api.get(`/attendance/metrics?${query.toString()}`);
+};
+
+export const getRandomVerse = async () => {
+    return api.get('/verse/random');
+};
+
+export const getAttendanceRange = async (familyId: string) => {
+    return api.get('/attendance/range', { params: { familyId } });
 };
 
 export default api;
