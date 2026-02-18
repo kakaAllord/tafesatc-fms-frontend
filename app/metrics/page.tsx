@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import { getMetrics } from '../services/api';
+import { getMetrics, getAttendanceRange } from '../services/api';
 import Cookies from 'js-cookie';
 import { Calendar, TrendingUp, BarChart3, Search, UserCheck, UserX, Loader2, ArrowRight } from 'lucide-react';
 import {
@@ -17,11 +17,16 @@ import {
 } from 'recharts';
 
 export default function MetricsPage() {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [summary, setSummary] = useState({ present: 0, absent: 0, count: 0 });
+
+    const [dateRange, setDateRange] = useState<{min:string,max:string}>({min:'',max:''});
 
     const familyId = Cookies.get('familyId');
 
@@ -55,11 +60,31 @@ export default function MetricsPage() {
         }
     };
 
+    // when the date inputs change we fetch metrics
     useEffect(() => {
         if (startDate && endDate) {
             handleFetchMetrics();
         }
     }, [startDate, endDate]);
+
+    // on mount grab available range and set defaults to today
+    useEffect(() => {
+        if (!familyId) return;
+        getAttendanceRange(familyId).then(res => {
+            if (res.data.success) {
+                const min = res.data.body.minDate ? new Date(res.data.body.minDate).toISOString().split('T')[0] : todayStr;
+                const max = res.data.body.maxDate ? new Date(res.data.body.maxDate).toISOString().split('T')[0] : todayStr;
+                setDateRange({ min, max });
+
+                // pick today's date within the returned bounds
+                const defaultDate = todayStr < min ? min : todayStr > max ? max : todayStr;
+                setStartDate(defaultDate);
+                setEndDate(defaultDate);
+            }
+        }).catch(() => {
+            // ignore errors
+        });
+    }, [familyId]);
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -84,6 +109,8 @@ export default function MetricsPage() {
                                         type="date"
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
+                                        min={dateRange.min || undefined}
+                                        max={endDate || dateRange.max || undefined}
                                         className="pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-800 focus:outline-none focus:border-blue-500"
                                     />
                                 </div>
@@ -93,6 +120,8 @@ export default function MetricsPage() {
                                         type="date"
                                         value={endDate}
                                         onChange={(e) => setEndDate(e.target.value)}
+                                        min={startDate || dateRange.min || undefined}
+                                        max={dateRange.max || undefined}
                                         className="pl-4 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-black text-slate-800 focus:outline-none focus:border-blue-500"
                                     />
                                 </div>
@@ -107,7 +136,7 @@ export default function MetricsPage() {
                             <Search className="text-blue-500/40" size={48} />
                         </div>
                         <h2 className="text-2xl font-black text-slate-800 tracking-tight italic uppercase mb-3 text-2xl font-bold">Initialize Analysis</h2>
-                        <p className="text-slate-400 max-w-sm mx-auto font-bold italic text-xs tracking-widest uppercase opacity-60">Please choose a temporal window to generate sector metrics.</p>
+                        <p className="text-slate-400 max-w-sm mx-auto font-bold italic text-xs tracking-widest uppercase opacity-60">Please choose a date range to generate sector metrics.</p>
                     </div>
                 ) : loading ? (
                     <div className="space-y-8 animate-pulse p-20 text-center">
@@ -183,7 +212,7 @@ export default function MetricsPage() {
                                             dataKey="date"
                                             axisLine={false}
                                             tickLine={false}
-                                            tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900, textTransform: 'uppercase' }}
+                                            tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900, style: { textTransform: 'uppercase' } }}
                                             dy={15}
                                         />
                                         <YAxis

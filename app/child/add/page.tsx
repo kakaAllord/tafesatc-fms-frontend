@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Navbar from '../../../components/Navbar';
-import { getCourses, addParent } from '../../../services/api';
+import Navbar from '../../components/Navbar';
+import { getCourses, addParent } from '../../services/api';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { UserPlus, ChevronRight, Save, GraduationCap, ArrowLeft, AlertCircle } from 'lucide-react';
@@ -57,9 +57,11 @@ export default function AddChild() {
                     </button>
                     <div>
                         <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase italic mb-1">
-                            New <span className="text-emerald-600">Entity</span>
+                            New <span className="text-emerald-600">Child</span>
                         </h1>
-                        <p className="text-slate-400 font-bold italic text-xs tracking-widest uppercase opacity-70">Expand family registry core</p>
+                        <p className="text-slate-400 font-bold italic text-xs tracking-widest uppercase opacity-70">
+                            Do well to communicate to the CU secretary before adding this child.
+                        </p>
                     </div>
                 </div>
 
@@ -76,20 +78,20 @@ export default function AddChild() {
                     <form onSubmit={handleSubmit} className="p-10 relative z-10 space-y-8">
                         <div className="space-y-6">
                             <div>
-                                <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1 italic">Identification Name</label>
+                                <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1 italic">Child's Name</label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     className="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-slate-900 font-black focus:outline-none focus:border-emerald-500 transition-all placeholder:font-normal placeholder:opacity-30"
-                                    placeholder="e.g. Samuel Ndikumana"
+                                    placeholder="Enter Child's name"
                                     required
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1 italic">Course Track</label>
+                                    <label className="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1 italic">Child's Course</label>
                                     <div className="relative">
                                         <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
                                         <select
@@ -111,7 +113,7 @@ export default function AddChild() {
                                         className="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-black text-slate-800 focus:outline-none focus:border-emerald-500 transition-all"
                                         required
                                     >
-                                        {["4", "5", "6", "7_1", "7_2", "8"].map(l => <option key={l} value={l}>Sector Level {l.replace('_', '.')}</option>)}
+                                        {["4", "5", "6", "7_1", "7_2", "8"].map(l => <option key={l} value={l}>Level {l.replace('_', '.')}</option>)}
                                     </select>
                                 </div>
                             </div>
@@ -119,7 +121,7 @@ export default function AddChild() {
 
                         <div className="pt-8 border-t border-slate-50 flex items-center justify-between gap-6">
                             <p className="text-[9px] text-slate-300 font-black uppercase tracking-widest italic leading-relaxed max-w-[200px]">
-                                Verified entities are automatically synced to the central registry.
+                                Do well to make sure that the Secretary is aware of the adding of this child.
                             </p>
                             <button
                                 type="submit"

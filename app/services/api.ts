@@ -24,11 +24,11 @@ export const getMyFamily = async () => {
     return Promise.resolve(null); // Placeholder
 };
 
-export const getMembers = async (familyId: string) => {
+export const getUsers = async (familyId: string) => {
     return api.get(`/user/all?familyId=${familyId}`);
 };
 
-export const addChild = async (data: any) => {
+export const addParent = async (data: any) => {
     return api.post('/user', { ...data, isParent: false });
 };
 
@@ -46,6 +46,15 @@ export const getHistory = async (familyId: string) => {
 
 export const getAttendanceByDate = async (familyId: string, date: string) => {
     return api.get(`/attendance?familyId=${familyId}&date=${date}`);
+};
+
+// wrapper that satisfies the frontend requirement for a boolean existence check
+export const checkAttendanceExists = async (familyId: string, date: string) => {
+    const res = await getAttendanceByDate(familyId, date);
+    return {
+        success: res.data.success,
+        exists: Array.isArray(res.data.body) && res.data.body.length > 0,
+    };
 };
 
 export const getMetrics = async (params: {

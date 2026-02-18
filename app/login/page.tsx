@@ -34,12 +34,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-900 overflow-hidden relative">
+    <div className="flex items-center justify-center h-screen py-12 bg-slate-900 overflow-hidden relative">
       {/* Background decorative elements */}
       <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
       <div className="absolute bottom-0 -right-4 w-72 h-72 bg-emerald-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
 
-      <div className="relative p-8 bg-white rounded-[32px] shadow-2xl w-full max-w-md border border-slate-100 mx-4">
+      <div className="relative p-6 bg-white rounded-[32px] shadow-2xl w-full max-w-md border border-slate-100 mx-4 max-h-[80vh] overflow-auto">
         <div className="flex flex-col items-center mb-10">
           <div className="w-20 h-20 relative bg-slate-50 rounded-2xl p-4 mb-5 shadow-sm border border-slate-100 h-20">
             <Image
@@ -72,7 +72,7 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 text-slate-900 transition-all font-black placeholder:font-normal placeholder:opacity-30"
-                placeholder="e.g. ndikumana_family"
+                placeholder="Enter family name"
                 required
               />
             </div>
@@ -114,7 +114,7 @@ export default function LoginPage() {
 
         <div className="mt-12 text-center">
           <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] italic">
-            © 2026 TAFES Burundi Core
+            © 2026 TAFES ATC
           </p>
         </div>
       </div>

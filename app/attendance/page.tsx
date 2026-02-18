@@ -1,14 +1,17 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import { getUsers, getAttendanceByDate, submitAttendance, getAttendanceRange } from '../services/api';
+import { getUsers, getAttendanceByDate, submitAttendance, getAttendanceRange, checkAttendanceExists } from '../services/api';
 import Cookies from 'js-cookie';
 import { Check, X, Calendar as CalendarIcon, Loader2, Save, History, ClipboardCheck, AlertCircle, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function AttendancePage() {
     const [users, setUsers] = useState<any[]>([]);
     const [attendanceState, setAttendanceState] = useState<{ [key: string]: boolean }>({});
-    const [selectedDate, setSelectedDate] = useState('');
+    // default the date picker to today so the page immediately shows today's record (if any)
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const [selectedDate, setSelectedDate] = useState(todayStr);
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -18,8 +21,6 @@ export default function AttendancePage() {
     const [dateRange, setDateRange] = useState<{ min: string, max: string }>({ min: '', max: '' });
 
     const familyId = Cookies.get('familyId');
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
 
     useEffect(() => {
         if (familyId) {
@@ -37,6 +38,9 @@ export default function AttendancePage() {
                     setDateRange({ min, max: todayStr > max ? todayStr : max });
                 }
             });
+
+            // automatically load today's attendance record when family is known
+            handleDateChange(todayStr);
         }
     }, [familyId]);
 
@@ -55,8 +59,26 @@ export default function AttendancePage() {
         if (!familyId) return;
 
         setLoading(true);
-        // Fetch existing attendance for this date
+        // For today we first perform a lightweight existence check as requested by the
+        // specification; if the record is there we switch immediately to view mode. Otherwise
+        // we fall back to the normal fetch logic which also handles other dates.
         try {
+            if (dateStr === todayStr) {
+                const existsRes = await checkAttendanceExists(familyId, dateStr);
+                if (existsRes.success && existsRes.exists) {
+                    // record exists – fetch full data to display in view mode
+                    const fullRes = await getAttendanceByDate(familyId, dateStr);
+                    if (fullRes.data.success) {
+                        setPastAttendance(fullRes.data.body);
+                    }
+                    setViewMode('view');
+                    setLoading(false);
+                    return;
+                }
+                // if we reach here it means there is no record yet for today; fall through to
+                // mark state further down
+            }
+
             const res = await getAttendanceByDate(familyId, dateStr);
             if (res.data.success && res.data.body.length > 0) {
                 setPastAttendance(res.data.body);
@@ -121,9 +143,8 @@ export default function AttendancePage() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
                     <div>
                         <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase italic">
-                            Registry <span className="text-blue-600">Core</span>
+                            Attendance<span className="text-blue-600">Data</span>
                         </h1>
-                        <p className="text-slate-400 font-bold italic text-sm tracking-widest uppercase opacity-70">Sector attendance management</p>
                     </div>
 
                     <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-200 flex flex-col gap-1 w-full md:w-64">
@@ -147,7 +168,6 @@ export default function AttendancePage() {
                         <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                             <CalendarIcon className="text-slate-200" size={32} />
                         </div>
-                        <h3 className="text-xl font-black text-slate-800 tracking-tight uppercase italic mb-2">Initialize Sector</h3>
                         <p className="text-slate-400 font-bold italic text-xs tracking-widest uppercase opacity-60">Please select a date to start the registry.</p>
                     </div>
                 )}
