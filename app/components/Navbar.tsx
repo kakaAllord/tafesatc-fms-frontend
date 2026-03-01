@@ -36,7 +36,7 @@ export default function Navbar() {
                 />
               </div>
               <span className="font-black text-lg text-white tracking-tighter uppercase italic">
-                We<span className="text-blue-400">Fam</span>
+                Fam<span className="text-blue-400">ily</span>
               </span>
             </Link>
           </div>
