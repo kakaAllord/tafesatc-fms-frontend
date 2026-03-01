@@ -39,9 +39,9 @@ export default function LoginPage() {
       <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
       <div className="absolute bottom-0 -right-4 w-72 h-72 bg-emerald-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
 
-      <div className="relative p-6 bg-white rounded-[32px] shadow-2xl w-full max-w-md border border-slate-100 mx-4 max-h-[80vh] overflow-auto">
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-20 h-20 relative bg-slate-50 rounded-2xl p-4 mb-5 shadow-sm border border-slate-100 h-20">
+      <div className="relative p-6 bg-white rounded-[32px] shadow-2xl w-full max-w-md border border-slate-100 mx-4 max-h-[90vh] overflow-auto">
+        <div className="flex items-center gap-4 mb-10">
+          <div className="w-20 h-20 shrink-0 relative bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100">
             <Image
               src="/logo-blue.png"
               alt="TAFES Logo"
@@ -49,10 +49,12 @@ export default function LoginPage() {
               className="object-contain p-2"
             />
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight italic uppercase">
-            We<span className="text-blue-600">Fam</span>
-          </h1>
-          <p className="text-slate-400 mt-2 font-bold italic text-sm tracking-widest uppercase opacity-60">Family Portal Access</p>
+          <div className="flex flex-col items-center flex-1">
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight italic uppercase">
+              FAM<span className="text-blue-600">ILY</span>
+            </h1>
+            <p className="text-slate-400 mt-2 font-bold italic text-sm tracking-widest uppercase opacity-60">Family Portal Access</p>
+          </div>
         </div>
 
         {error && (
